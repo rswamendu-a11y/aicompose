@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Samsung AI Sales (Stable V7)</title>
+    <title>Samsung AI (Universal V8)</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #034EA2; --bg: #F4F7F6; --white: #ffffff; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); padding: 15px; padding-bottom: 80px; margin: 0; }
+        
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { color: var(--primary); font-size: 22px; margin: 0; }
         .header p { font-size: 12px; color: #666; }
         
-        .api-card { background: #E8EAF6; border: 1px solid #C5CAE9; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        .api-card { background: #E3F2FD; border: 1px solid #90CAF9; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
         .api-input { width: 100%; padding: 10px; border: 1px solid #999; border-radius: 8px; box-sizing: border-box; font-family: monospace; }
         
         .card { background: var(--white); padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -28,15 +29,14 @@
         .msg-text { white-space: pre-wrap; font-size: 15px; line-height: 1.5; color: #333; }
         .wa-btn { background: #25D366; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; }
 
-        /* Error Box Style */
-        .error-log { font-size: 11px; color: red; background: #ffebee; padding: 10px; border-radius: 8px; margin-top: 10px; display: none; word-wrap: break-word; font-family: monospace; }
+        .status-log { font-size: 10px; color: #888; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>Samsung AI V7 🛠️</h1>
-    <p>Stable V1 API | Diagnostic Mode</p>
+    <h1>Samsung AI V8 🚀</h1>
+    <p>Smart Auto-Switch Technology</p>
 </div>
 
 <div class="api-card">
@@ -47,8 +47,8 @@
 <div class="card">
     <div class="form-group"><label>Your Shop (Auto-Saved)</label><input type="text" id="shop" onchange="saveData()"></div>
     <div class="form-group"><label>Customer Name</label><input type="text" id="name"></div>
-    <div class="form-group"><label>Amount (₹)</label><input type="number" id="amount" placeholder="46000"></div>
-    <div class="form-group"><label>Old Phone</label><input type="text" id="phone" placeholder="Galaxy A12"></div>
+    <div class="form-group"><label>Amount (₹)</label><input type="number" id="amount" placeholder="50000"></div>
+    <div class="form-group"><label>Old Phone</label><input type="text" id="phone" placeholder="Galaxy M51"></div>
     <div class="form-group">
         <label>Language</label>
         <select id="lang">
@@ -59,85 +59,97 @@
         </select>
     </div>
     
-    <button class="gen-btn" onclick="generate()">Generate Messages 🚀</button>
-    <div id="errorBox" class="error-log"></div>
+    <button class="gen-btn" onclick="startGeneration()">Generate Messages 🚀</button>
+    <div id="statusLog" class="status-log"></div>
 </div>
 
 <div id="outputArea"></div>
 
 <script>
-    // AUTO LOAD
     document.addEventListener("DOMContentLoaded", () => {
-        if(localStorage.getItem("v7_key")) document.getElementById("apiKey").value = localStorage.getItem("v7_key");
-        if(localStorage.getItem("v7_shop")) document.getElementById("shop").value = localStorage.getItem("v7_shop");
+        if(localStorage.getItem("v8_key")) document.getElementById("apiKey").value = localStorage.getItem("v8_key");
+        if(localStorage.getItem("v8_shop")) document.getElementById("shop").value = localStorage.getItem("v8_shop");
     });
+
     function saveData() {
-        localStorage.setItem("v7_key", document.getElementById("apiKey").value.trim());
-        localStorage.setItem("v7_shop", document.getElementById("shop").value.trim());
+        localStorage.setItem("v8_key", document.getElementById("apiKey").value.trim());
+        localStorage.setItem("v8_shop", document.getElementById("shop").value.trim());
     }
 
-    async function generate() {
+    async function startGeneration() {
         const key = document.getElementById("apiKey").value.trim();
         const name = document.getElementById("name").value.trim();
         const amount = document.getElementById("amount").value;
         const phone = document.getElementById("phone").value;
         const lang = document.getElementById("lang").value;
         const shop = document.getElementById("shop").value;
-        const errorBox = document.getElementById("errorBox");
+        const log = document.getElementById("statusLog");
 
         if(!key) { alert("Enter API Key"); return; }
         if(!name) { alert("Enter Name"); return; }
 
         const btn = document.querySelector(".gen-btn");
-        btn.innerText = "Connecting to Google...";
+        btn.innerText = "Thinking...";
         btn.disabled = true;
         document.getElementById("outputArea").innerHTML = "";
-        errorBox.style.display = "none";
-        errorBox.innerText = "";
 
         // Prompt
         const prompt = `Write 3 unique WhatsApp messages for customer "${name}" in ${lang}. 
-        Context: Loan Limit ₹${amount}, Old Phone ${phone}, Shop ${shop}.
+        Context: Pre-Approved Loan Limit ₹${amount}, Old Phone ${phone}, Shop ${shop}.
         Rules: Mention 'No Paperwork', '0% Down Payment', 'Upgrade to Samsung 5G'. Use emojis.
         Output: 3 messages separated by |||.`;
 
-        // USING STABLE V1 API (gemini-1.5-flash)
-        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${key}`;
+        // ATTEMPT 1: Try modern v1beta + flash
+        log.innerText = "Trying Connection 1 (Flash Beta)...";
+        let success = await callAI(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, prompt);
 
+        // ATTEMPT 2: If failed, try classic v1beta + pro
+        if (!success) {
+            log.innerText = "Connection 1 failed. Trying Connection 2 (Pro Beta)...";
+            success = await callAI(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`, prompt);
+        }
+
+        // ATTEMPT 3: If failed, try stable v1 + pro
+        if (!success) {
+            log.innerText = "Connection 2 failed. Trying Connection 3 (Stable)...";
+            success = await callAI(`https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${key}`, prompt);
+        }
+
+        if (!success) {
+            log.innerText = "All connections failed. Check API Key.";
+            alert("Error: Could not connect to any Google AI Model. Please check if your API Key is valid.");
+        } else {
+            log.innerText = "Success!";
+        }
+
+        btn.disabled = false;
+        btn.innerText = "Generate Messages 🚀";
+        saveData();
+    }
+
+    async function callAI(url, prompt) {
         try {
             const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             });
-
             const data = await response.json();
-
-            // CHECK FOR GOOGLE ERRORS
+            
             if (data.error) {
-                console.error("AI Error:", data.error);
-                // SHOW DETAILED ERROR ON SCREEN
-                errorBox.style.display = "block";
-                errorBox.innerText = "GOOGLE ERROR: " + data.error.message + " (Code: " + data.error.code + ")";
-                alert("Failed! See the red error box below the button.");
-            } else {
-                // SUCCESS
-                const texts = data.candidates[0].content.parts[0].text.split("|||");
-                texts.forEach(t => {
-                    if(t.trim().length > 5) createCard(t.trim());
-                });
+                console.log("Failed url: " + url, data.error);
+                return false;
             }
+            
+            const texts = data.candidates[0].content.parts[0].text.split("|||");
+            texts.forEach(t => {
+                if(t.trim().length > 5) createCard(t.trim());
+            });
+            return true;
 
         } catch (err) {
-            // NETWORK ERRORS
-            errorBox.style.display = "block";
-            errorBox.innerText = "NETWORK ERROR: " + err.message;
-            alert("Network Error. Check internet connection.");
+            return false;
         }
-
-        btn.disabled = false;
-        btn.innerText = "Generate Messages 🚀";
-        saveData();
     }
 
     function createCard(text) {
