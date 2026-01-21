@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Samsung AI (Eco V12)</title>
+    <title>Samsung AI (Pro V13)</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #034EA2; --bg: #F4F7F6; --white: #ffffff; }
@@ -11,26 +11,35 @@
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { color: var(--primary); font-size: 22px; margin: 0; }
         .header p { font-size: 12px; color: #666; }
+        
         .api-card { background: #E3F2FD; border: 1px solid #90CAF9; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
         .api-input { width: 100%; padding: 10px; border: 1px solid #999; border-radius: 8px; box-sizing: border-box; font-family: monospace; }
+        
         .card { background: var(--white); padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .form-group { margin-bottom: 12px; }
         label { font-size: 11px; font-weight: bold; color: #555; display: block; margin-bottom: 5px; text-transform: uppercase; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; box-sizing: border-box; }
+        
+        /* Flex Row for side-by-side inputs */
+        .row { display: flex; gap: 10px; }
+        .col { flex: 1; }
+
         .gen-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; margin-top: 15px; cursor: pointer; }
         .gen-btn:disabled { background: #ccc; }
+
         #outputArea { margin-top: 20px; }
         .msg-card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 5px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .msg-text { white-space: pre-wrap; font-size: 15px; line-height: 1.5; color: #333; }
-        .wa-btn { background: #25D366; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; }
+        .wa-btn { background: #25D366; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
         .status-log { font-size: 11px; color: #555; text-align: center; margin-top: 10px; font-style: italic; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>Samsung AI V12 ⚡</h1>
-    <p>Free Tier Optimized (Flash Only)</p>
+    <h1>Samsung AI V13 🎯</h1>
+    <p>With Down Payment & Direct WhatsApp</p>
 </div>
 
 <div class="api-card">
@@ -40,15 +49,36 @@
 
 <div class="card">
     <div class="form-group"><label>Your Shop (Auto-Saved)</label><input type="text" id="shop" onchange="saveData()"></div>
-    <div class="form-group"><label>Customer Name</label><input type="text" id="name"></div>
-    <div class="form-group"><label>Amount (₹)</label><input type="number" id="amount" placeholder="50000"></div>
-    <div class="form-group"><label>Old Phone</label><input type="text" id="phone" placeholder="Galaxy M51"></div>
+    
+    <div class="form-group"><label>Customer Name</label><input type="text" id="name" placeholder="e.g. Abinash"></div>
+    
+    <div class="form-group"><label>Customer Mobile (For Link)</label><input type="number" id="mobile" placeholder="98XXXXXXXX"></div>
+    
+    <div class="row">
+        <div class="col"><label>Amount (₹)</label><input type="number" id="amount" placeholder="50000"></div>
+        <div class="col">
+            <label>Down Payment</label>
+            <select id="dp">
+                <option value="0%">0% (Zero)</option>
+                <option value="5%">5%</option>
+                <option value="10%">10%</option>
+                <option value="15%">15%</option>
+                <option value="20%">20%</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col"><label>Old Phone</label><input type="text" id="phone" placeholder="Galaxy M51"></div>
+        <div class="col"><label>Offer Expiry</label><input type="date" id="expiry"></div>
+    </div>
+
     <div class="form-group">
         <label>Language</label>
         <select id="lang">
+            <option value="English">English</option>
             <option value="Odia">Odia</option>
             <option value="Bengali">Bengali</option>
-            <option value="English">English</option>
             <option value="Hindi">Hindi</option>
         </select>
     </div>
@@ -61,20 +91,23 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        if(localStorage.getItem("v12_key")) document.getElementById("apiKey").value = localStorage.getItem("v12_key");
-        if(localStorage.getItem("v12_shop")) document.getElementById("shop").value = localStorage.getItem("v12_shop");
+        if(localStorage.getItem("v13_key")) document.getElementById("apiKey").value = localStorage.getItem("v13_key");
+        if(localStorage.getItem("v13_shop")) document.getElementById("shop").value = localStorage.getItem("v13_shop");
     });
 
     function saveData() {
-        localStorage.setItem("v12_key", document.getElementById("apiKey").value.trim());
-        localStorage.setItem("v12_shop", document.getElementById("shop").value.trim());
+        localStorage.setItem("v13_key", document.getElementById("apiKey").value.trim());
+        localStorage.setItem("v13_shop", document.getElementById("shop").value.trim());
     }
 
     async function startGeneration() {
         const key = document.getElementById("apiKey").value.trim();
         const name = document.getElementById("name").value.trim();
+        const mobile = document.getElementById("mobile").value.trim();
         const amount = document.getElementById("amount").value;
+        const dp = document.getElementById("dp").value;
         const phone = document.getElementById("phone").value;
+        const expiry = document.getElementById("expiry").value; // YYYY-MM-DD
         const lang = document.getElementById("lang").value;
         const shop = document.getElementById("shop").value;
         const log = document.getElementById("statusLog");
@@ -86,23 +119,44 @@
         btn.disabled = true;
         document.getElementById("outputArea").innerHTML = "";
 
-        // STEP 1: FORCE FIND "FLASH" MODEL (Cheap/Free)
-        log.innerText = "🔍 Searching for free 'Flash' models...";
+        // STEP 1: FIND MODEL
+        log.innerText = "🔍 Connecting to AI...";
         let modelName = await findCheapModel(key);
         
         if (!modelName) {
-            log.innerText = "❌ No Flash model found. Check API Key permissions.";
+            log.innerText = "❌ No valid model found. Check API Key.";
             btn.disabled = false;
             return;
         }
 
         // STEP 2: GENERATE
-        log.innerText = `✅ Locked onto: ${modelName}. Generating...`;
+        log.innerText = `✅ Writing messages using ${modelName}...`;
 
-        const prompt = `Write 3 unique WhatsApp messages for customer "${name}" in ${lang}. 
-        Context: Pre-Approved Loan Limit ₹${amount}, Old Phone ${phone}, Shop ${shop}.
-        Rules: Mention 'No Paperwork', '0% Down Payment', 'Upgrade to Samsung 5G'. Use emojis.
-        Output: 3 messages separated by |||.`;
+        // Format Date nicely
+        let dateText = "Limited Time";
+        if(expiry) {
+            const dateObj = new Date(expiry);
+            dateText = dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        const prompt = `
+            Act as a Samsung Store Manager. Write 3 unique WhatsApp messages for "${name}" in ${lang}.
+            
+            Details:
+            - Pre-Approved Loan: ₹${amount}
+            - Old Phone: ${phone}
+            - Down Payment Required: ${dp}
+            - Offer Expiry: ${dateText}
+            - Shop Name: ${shop}
+            
+            Strict Rules:
+            1. If Down Payment is 0%, emphasize "Zero Down Payment". If it is 10-20%, say "Low Down Payment".
+            2. Mention the Expiry Date to create urgency.
+            3. Suggest upgrading to a new Samsung 5G.
+            4. Use emojis.
+            
+            Output: 3 messages separated by |||.
+        `;
 
         const url = `https://generativelanguage.googleapis.com/v1beta/${modelName}:generateContent?key=${key}`;
 
@@ -116,12 +170,12 @@
             const data = await response.json();
 
             if (data.error) {
-                alert("Quota Error: " + data.error.message);
-                log.innerText = "Generation failed.";
+                alert("Error: " + data.error.message);
+                log.innerText = "Failed.";
             } else {
                 const texts = data.candidates[0].content.parts[0].text.split("|||");
                 texts.forEach(t => {
-                    if(t.trim().length > 5) createCard(t.trim());
+                    if(t.trim().length > 5) createCard(t.trim(), mobile);
                 });
                 log.innerText = "Done! ✨";
             }
@@ -133,44 +187,39 @@
         saveData();
     }
 
+    // Helper to find Flash model
     async function findCheapModel(key) {
         try {
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
             const data = await response.json();
-            
-            if (data.error) {
-                alert("Key Error: " + data.error.message);
-                return null;
-            }
-
             if (data.models) {
-                // FILTER: Only look for models with "flash" in the name
-                // Flash models are usually free tier compatible.
-                // Avoid "Pro" or "Ultra".
-                const flashModels = data.models.filter(m => 
-                    m.name.toLowerCase().includes("flash") && 
-                    m.supportedGenerationMethods.includes("generateContent")
-                );
-
-                if (flashModels.length > 0) {
-                    // Pick the last one (usually newest) or first one
-                    return flashModels[0].name; 
-                }
-                
-                // Backup: if no flash, try standard 1.5 pro (not 2.5)
-                const backup = data.models.find(m => m.name.includes("gemini-1.5-pro"));
-                if(backup) return backup.name;
+                const flash = data.models.find(m => m.name.includes("flash") && m.supportedGenerationMethods.includes("generateContent"));
+                if (flash) return flash.name;
+                const any = data.models.find(m => m.name.includes("gemini") && m.supportedGenerationMethods.includes("generateContent"));
+                if (any) return any.name;
             }
-            return null;
-        } catch (e) {
-            return null;
-        }
+            return "models/gemini-1.5-flash"; // Fallback
+        } catch (e) { return "models/gemini-1.5-flash"; }
     }
 
-    function createCard(text) {
+    function createCard(text, mobile) {
         const div = document.createElement("div");
         div.className = "msg-card";
-        div.innerHTML = `<div class="msg-text">${text}</div><button class="wa-btn" onclick="window.open('https://wa.me/?text=${encodeURIComponent(text)}')">Send WhatsApp 🟢</button>`;
+        
+        let waLink = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        if(mobile.length >= 10) {
+            // Remove spaces or +91 if user typed them, ensure clean number
+            let cleanMob = mobile.replace(/\D/g,''); 
+            if(cleanMob.length === 10) cleanMob = "91" + cleanMob;
+            waLink = `https://wa.me/${cleanMob}?text=${encodeURIComponent(text)}`;
+        }
+
+        div.innerHTML = `
+            <div class="msg-text">${text}</div>
+            <button class="wa-btn" onclick="window.open('${waLink}', '_blank')">
+                <span>🟢</span> Send to ${mobile || "WhatsApp"}
+            </button>
+        `;
         document.getElementById("outputArea").appendChild(div);
     }
 </script>
