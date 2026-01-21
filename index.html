@@ -2,162 +2,107 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Samsung AI (Universal V8)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samsung AI DIAGNOSTIC V10</title>
     <style>
-        :root { --primary: #034EA2; --bg: #F4F7F6; --white: #ffffff; }
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); padding: 15px; padding-bottom: 80px; margin: 0; }
-        
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { color: var(--primary); font-size: 22px; margin: 0; }
-        .header p { font-size: 12px; color: #666; }
-        
-        .api-card { background: #E3F2FD; border: 1px solid #90CAF9; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .api-input { width: 100%; padding: 10px; border: 1px solid #999; border-radius: 8px; box-sizing: border-box; font-family: monospace; }
-        
-        .card { background: var(--white); padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .form-group { margin-bottom: 12px; }
-        label { font-size: 11px; font-weight: bold; color: #555; display: block; margin-bottom: 5px; text-transform: uppercase; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; box-sizing: border-box; }
-        
-        .gen-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; margin-top: 15px; cursor: pointer; }
-        .gen-btn:disabled { background: #ccc; }
-
-        #outputArea { margin-top: 20px; }
-        .msg-card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 5px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .msg-text { white-space: pre-wrap; font-size: 15px; line-height: 1.5; color: #333; }
-        .wa-btn { background: #25D366; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; }
-
-        .status-log { font-size: 10px; color: #888; text-align: center; margin-top: 10px; }
+        body { font-family: monospace; background: #000; color: #0f0; padding: 20px; }
+        input { width: 100%; padding: 15px; border-radius: 5px; border: none; font-family: monospace; }
+        button { width: 100%; padding: 20px; background: #d00; color: white; font-weight: bold; border: none; margin-top: 20px; font-size: 18px; border-radius: 5px; cursor: pointer; }
+        #console { margin-top: 20px; border: 1px solid #333; padding: 10px; background: #111; min-height: 200px; white-space: pre-wrap; word-break: break-all; }
+        .success { color: #0f0; }
+        .error { color: #f00; font-weight: bold; }
+        .warning { color: yellow; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>Samsung AI V8 🚀</h1>
-    <p>Smart Auto-Switch Technology</p>
-</div>
-
-<div class="api-card">
-    <label>🔑 Paste API Key</label>
-    <input type="text" id="apiKey" class="api-input" placeholder="AIzaSy..." onchange="saveData()">
-</div>
-
-<div class="card">
-    <div class="form-group"><label>Your Shop (Auto-Saved)</label><input type="text" id="shop" onchange="saveData()"></div>
-    <div class="form-group"><label>Customer Name</label><input type="text" id="name"></div>
-    <div class="form-group"><label>Amount (₹)</label><input type="number" id="amount" placeholder="50000"></div>
-    <div class="form-group"><label>Old Phone</label><input type="text" id="phone" placeholder="Galaxy M51"></div>
-    <div class="form-group">
-        <label>Language</label>
-        <select id="lang">
-            <option value="Odia">Odia</option>
-            <option value="Bengali">Bengali</option>
-            <option value="English">English</option>
-            <option value="Hindi">Hindi</option>
-        </select>
-    </div>
+    <h1>⚠️ DIAGNOSTIC MODE V10</h1>
+    <p>Paste API Key below to find the real error:</p>
     
-    <button class="gen-btn" onclick="startGeneration()">Generate Messages 🚀</button>
-    <div id="statusLog" class="status-log"></div>
-</div>
+    <input type="text" id="apiKey" placeholder="Paste AIzaSy...">
+    <button onclick="runTest()">RUN SYSTEM TEST</button>
 
-<div id="outputArea"></div>
+    <h3>SYSTEM LOG:</h3>
+    <div id="console">Ready to test...</div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        if(localStorage.getItem("v8_key")) document.getElementById("apiKey").value = localStorage.getItem("v8_key");
-        if(localStorage.getItem("v8_shop")) document.getElementById("shop").value = localStorage.getItem("v8_shop");
-    });
+    <script>
+        // Auto-load key if saved
+        if(localStorage.getItem("v10_key")) document.getElementById("apiKey").value = localStorage.getItem("v10_key");
 
-    function saveData() {
-        localStorage.setItem("v8_key", document.getElementById("apiKey").value.trim());
-        localStorage.setItem("v8_shop", document.getElementById("shop").value.trim());
-    }
-
-    async function startGeneration() {
-        const key = document.getElementById("apiKey").value.trim();
-        const name = document.getElementById("name").value.trim();
-        const amount = document.getElementById("amount").value;
-        const phone = document.getElementById("phone").value;
-        const lang = document.getElementById("lang").value;
-        const shop = document.getElementById("shop").value;
-        const log = document.getElementById("statusLog");
-
-        if(!key) { alert("Enter API Key"); return; }
-        if(!name) { alert("Enter Name"); return; }
-
-        const btn = document.querySelector(".gen-btn");
-        btn.innerText = "Thinking...";
-        btn.disabled = true;
-        document.getElementById("outputArea").innerHTML = "";
-
-        // Prompt
-        const prompt = `Write 3 unique WhatsApp messages for customer "${name}" in ${lang}. 
-        Context: Pre-Approved Loan Limit ₹${amount}, Old Phone ${phone}, Shop ${shop}.
-        Rules: Mention 'No Paperwork', '0% Down Payment', 'Upgrade to Samsung 5G'. Use emojis.
-        Output: 3 messages separated by |||.`;
-
-        // ATTEMPT 1: Try modern v1beta + flash
-        log.innerText = "Trying Connection 1 (Flash Beta)...";
-        let success = await callAI(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, prompt);
-
-        // ATTEMPT 2: If failed, try classic v1beta + pro
-        if (!success) {
-            log.innerText = "Connection 1 failed. Trying Connection 2 (Pro Beta)...";
-            success = await callAI(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`, prompt);
+        function log(msg, type = "") {
+            const box = document.getElementById("console");
+            const time = new Date().toLocaleTimeString();
+            box.innerHTML += `<div class="${type}">[${time}] ${msg}</div>`;
         }
 
-        // ATTEMPT 3: If failed, try stable v1 + pro
-        if (!success) {
-            log.innerText = "Connection 2 failed. Trying Connection 3 (Stable)...";
-            success = await callAI(`https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${key}`, prompt);
-        }
-
-        if (!success) {
-            log.innerText = "All connections failed. Check API Key.";
-            alert("Error: Could not connect to any Google AI Model. Please check if your API Key is valid.");
-        } else {
-            log.innerText = "Success!";
-        }
-
-        btn.disabled = false;
-        btn.innerText = "Generate Messages 🚀";
-        saveData();
-    }
-
-    async function callAI(url, prompt) {
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-            const data = await response.json();
+        async function runTest() {
+            const key = document.getElementById("apiKey").value.trim();
+            const consoleBox = document.getElementById("console");
             
-            if (data.error) {
-                console.log("Failed url: " + url, data.error);
-                return false;
+            if(key.length < 30) {
+                alert("That API Key looks too short.");
+                return;
             }
-            
-            const texts = data.candidates[0].content.parts[0].text.split("|||");
-            texts.forEach(t => {
-                if(t.trim().length > 5) createCard(t.trim());
-            });
-            return true;
 
-        } catch (err) {
-            return false;
+            // Save key
+            localStorage.setItem("v10_key", key);
+            consoleBox.innerHTML = ""; // Clear log
+            log("Starting Network Test...", "warning");
+            log("Key Length: " + key.length + " characters.");
+            log("Checking for hidden spaces...", "warning");
+
+            if (key.includes(" ")) {
+                log("FAIL: Key contains spaces! Delete them.", "error");
+                return;
+            }
+
+            // TEST 1: GEMINI FLASH (Modern)
+            log("--------------------------------");
+            log("TEST 1: Connecting to Gemini 1.5 Flash...");
+            const url1 = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+            await makeCall(url1);
+
+            // TEST 2: GEMINI PRO (Legacy)
+            log("--------------------------------");
+            log("TEST 2: Connecting to Gemini Pro...");
+            const url2 = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`;
+            await makeCall(url2);
         }
-    }
 
-    function createCard(text) {
-        const div = document.createElement("div");
-        div.className = "msg-card";
-        div.innerHTML = `<div class="msg-text">${text}</div><button class="wa-btn" onclick="window.open('https://wa.me/?text=${encodeURIComponent(text)}')">Send WhatsApp 🟢</button>`;
-        document.getElementById("outputArea").appendChild(div);
-    }
-</script>
+        async function makeCall(url) {
+            const prompt = { contents: [{ parts: [{ text: "Say Hello" }] }] };
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(prompt)
+                });
+
+                log("HTTP Status: " + response.status, response.ok ? "success" : "error");
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    log("SUCCESS! Connection Established.", "success");
+                    log("AI Response: " + data.candidates[0].content.parts[0].text);
+                } else {
+                    log("GOOGLE ERROR MESSAGE:", "error");
+                    log(JSON.stringify(data.error, null, 2), "error");
+                    
+                    // Diagnosis help
+                    if(response.status === 400) log("HINT: API Key is Invalid or Permissions missing.", "warning");
+                    if(response.status === 403) log("HINT: Region Blocked OR Key Restrictions Active.", "warning");
+                    if(response.status === 404) log("HINT: Model name changed.", "warning");
+                }
+
+            } catch (err) {
+                log("NETWORK ERROR (Browser Blocked):", "error");
+                log(err.message, "error");
+                log("HINT: This usually means you are offline OR a firewall is blocking this.", "warning");
+            }
+        }
+    </script>
+
 </body>
 </html>
