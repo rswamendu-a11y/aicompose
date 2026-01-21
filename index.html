@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#034EA2">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Samsung AI Composer</title>
     
     <!-- Google Fonts -->
@@ -13,200 +11,47 @@
     
     <style>
         :root {
-            --primary: #034EA2; /* Samsung Blue */
-            --accent: #25D366; /* WhatsApp Green */
-            --bg: #F4F7F6;
-            --white: #ffffff;
-            --text: #333333;
+            --primary: #034EA2; --accent: #25D366; --bg: #F4F7F6; --white: #ffffff; --text: #333333;
         }
-
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--bg);
-            margin: 0;
-            padding: 15px;
-            padding-bottom: 80px;
-            color: var(--text);
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Roboto', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; padding-bottom: 80px; color: var(--text); -webkit-tap-highlight-color: transparent;
         }
-
-        /* App Header */
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-top: 10px;
-        }
-        .header h1 {
-            color: var(--primary);
-            margin: 0;
-            font-size: 24px;
-            font-weight: 800;
-        }
-        .header p {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        /* API Key Section */
-        .api-card {
-            background: #E3F2FD;
-            border: 1px solid #90CAF9;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .api-input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-family: monospace;
-            box-sizing: border-box;
-            margin-top: 5px;
-        }
-
-        /* Main Form Card */
-        .card {
-            background: var(--white);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
+        .header { text-align: center; margin-bottom: 20px; padding-top: 10px; }
+        .header h1 { color: var(--primary); margin: 0; font-size: 24px; font-weight: 800; }
+        .header p { font-size: 12px; color: #666; margin-top: 5px; }
         
-        label {
-            font-size: 12px;
-            font-weight: 700;
-            color: #555;
-            display: block;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
+        /* API Key Section */
+        .api-card { background: #E3F2FD; border: 1px solid #90CAF9; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
+        .api-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-family: monospace; box-sizing: border-box; margin-top: 5px; }
 
-        input, select {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            background: #fafafa;
-            box-sizing: border-box;
-            transition: 0.2s;
-        }
-        input:focus, select:focus {
-            border-color: var(--primary);
-            background: #fff;
-            outline: none;
-        }
+        .card { background: var(--white); padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 15px; }
+        label { font-size: 12px; font-weight: 700; color: #555; display: block; margin-bottom: 6px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 14px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 16px; background: #fafafa; box-sizing: border-box; }
+        input:focus, select:focus { border-color: var(--primary); background: #fff; outline: none; }
+        
+        .row { display: flex; gap: 12px; }
+        .col { flex: 1; }
 
-        /* Flex Row */
-        .row {
-            display: flex;
-            gap: 12px;
-        }
-        .col {
-            flex: 1;
-        }
-
-        /* Generate Button */
-        .gen-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #034EA2, #0056b3);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(3, 78, 162, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+        .gen-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #034EA2, #0056b3); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(3, 78, 162, 0.3); display: flex; align-items: center; justify-content: center; gap: 10px; }
         .gen-btn:active { transform: scale(0.98); }
 
-        /* Loader */
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            display: none;
-        }
+        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Results Area */
-        #outputArea {
-            margin-top: 25px;
-        }
-
-        .msg-card {
-            background: white;
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 20px;
-            position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border-left: 5px solid var(--primary);
-            animation: slideUp 0.3s ease-out;
-        }
+        #outputArea { margin-top: 25px; }
+        .msg-card { background: white; border-radius: 12px; padding: 18px; margin-bottom: 20px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; color: white; margin-bottom: 10px; text-transform: uppercase; }
         .badge-warm { background: #FF9800; }
         .badge-urgent { background: #E91E63; }
         .badge-pro { background: #034EA2; }
-
-        .msg-text {
-            font-size: 15px;
-            line-height: 1.6;
-            color: #333;
-            white-space: pre-wrap;
-            margin-bottom: 15px;
-        }
-
-        .wa-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            font-size: 11px;
-            color: #999;
-            margin-top: 30px;
-        }
+        
+        .msg-text { font-size: 15px; line-height: 1.6; color: #333; white-space: pre-wrap; margin-bottom: 15px; }
+        .wa-btn { width: 100%; padding: 12px; background-color: var(--accent); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        
+        .footer { text-align: center; font-size: 11px; color: #999; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
 <body>
@@ -216,36 +61,31 @@
     <p>Samsung & DMI Partner Tool</p>
 </div>
 
-<!-- API KEY INPUT (Auto Saved) -->
 <div class="api-card">
     <label>🔑 Paste Google Gemini API Key</label>
     <input type="password" id="apiKey" class="api-input" placeholder="Paste AIzaSy..." onchange="saveData()">
+    <div style="font-size:10px; color:#666; margin-top:5px;">Code auto-saves to your phone</div>
 </div>
 
 <div class="card">
-    <!-- SHOP DETAILS (Auto Saved) -->
     <div class="form-group">
         <label>Your Shop Details (Auto-Saved)</label>
         <input type="text" id="shopDetails" placeholder="e.g. M/S Mobile World, Cuttack" onchange="saveData()">
     </div>
-
-    <!-- CUSTOMER DETAILS -->
     <div class="form-group">
         <label>Customer Name</label>
         <input type="text" id="custName" placeholder="e.g. Abinash">
     </div>
-
     <div class="row">
         <div class="col form-group">
             <label>Amount (₹)</label>
             <input type="number" id="amount" placeholder="46000">
         </div>
         <div class="col form-group">
-            <label>Customer Mobile</label>
+            <label>Cust. Mobile</label>
             <input type="number" id="custMobile" placeholder="98XXXX">
         </div>
     </div>
-
     <div class="row">
         <div class="col form-group">
             <label>Old Phone</label>
@@ -260,7 +100,6 @@
             </select>
         </div>
     </div>
-
     <div class="form-group">
         <label>Message Language</label>
         <select id="language">
@@ -270,7 +109,6 @@
             <option value="Hindi">Hindi (हिंदी)</option>
             <option value="Marathi">Marathi (मराठी)</option>
             <option value="Telugu">Telugu (తెలుగు)</option>
-            <option value="Tamil">Tamil (தமிழ்)</option>
         </select>
     </div>
 
@@ -283,11 +121,11 @@
 <div id="outputArea"></div>
 
 <div class="footer">
-    Running on GitHub Pages | Version 5.0
+    Running on GitHub Pages | Version 6.0 (Auto-Fix)
 </div>
 
 <script>
-    // 1. AUTO-SAVE & LOAD DATA
+    // 1. AUTO-SAVE
     document.addEventListener("DOMContentLoaded", () => {
         if(localStorage.getItem("ai_apiKey")) document.getElementById("apiKey").value = localStorage.getItem("ai_apiKey");
         if(localStorage.getItem("ai_shop")) document.getElementById("shopDetails").value = localStorage.getItem("ai_shop");
@@ -298,7 +136,7 @@
         localStorage.setItem("ai_shop", document.getElementById("shopDetails").value.trim());
     }
 
-    // 2. AI GENERATION FUNCTION
+    // 2. SMART AI GENERATION (With Fallback)
     async function generateAI() {
         const key = document.getElementById("apiKey").value.trim();
         const name = document.getElementById("custName").value.trim();
@@ -309,11 +147,9 @@
         const lang = document.getElementById("language").value;
         const shop = document.getElementById("shopDetails").value.trim();
 
-        // VALIDATION
-        if (!key) { alert("Please paste your Google API Key at the top!"); return; }
+        if (!key) { alert("Please paste your Google API Key!"); return; }
         if (!name || !amount) { alert("Please enter Customer Name and Loan Amount."); return; }
 
-        // UI LOADING STATE
         const btn = document.querySelector(".gen-btn");
         const loader = document.getElementById("loader");
         const btnText = document.getElementById("btnText");
@@ -323,73 +159,63 @@
         btnText.innerText = "Thinking...";
         document.getElementById("outputArea").innerHTML = "";
 
-        // PROMPT ENGINEERING (The Brain)
         const prompt = `
-            Act as a professional and warm Samsung Store Manager. 
+            Act as a polite Samsung Store Manager. 
             Task: Write 3 unique WhatsApp messages for a customer named "${name}" in ${lang} language.
-            
-            Context:
-            - The customer has a Pre-Approved Loan Limit of ₹${amount}.
-            - Old Phone: ${oldPhone}.
-            - Down Payment: ${dp}.
-            - Shop Signature: ${shop}.
-
+            Context: Pre-Approved Limit ₹${amount}. Old Phone: ${oldPhone}. Down Payment: ${dp}. Shop: ${shop}.
             Requirements:
-            1. Suggest upgrading to a new Samsung 5G phone using the limit.
-            2. Mention "No Paperwork" and "Zero/Low Down Payment" clearly.
-            3. Use emojis generously to make it friendly.
-            4. Make the messages sound human, NOT robotic. 
-            
-            Output Structure (Strictly separated by "|||"):
-            - Message 1: Tone = Gratitude & Warmth (Focus on their good payment history).
-            - Message 2: Tone = Excitement & Urgency (Focus on getting a new phone today).
-            - Message 3: Tone = Professional & Direct (Focus on the financial benefit).
-
-            Do not include labels like "Message 1". Just return the 3 text bodies separated by |||.
+            1. Suggest upgrading to a new Samsung 5G.
+            2. Mention "No Paperwork" & "Low Down Payment".
+            3. Use emojis. 
+            Output: 3 text bodies separated by |||.
         `;
 
-        // API CALL
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
-
+        // STRATEGY: Try Standard Model (Pro). If fail, try Flash.
         try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-
-            const data = await response.json();
-
-            if (data.error) {
-                alert("AI Error: " + data.error.message);
-            } else {
-                const rawText = data.candidates[0].content.parts[0].text;
-                const messages = rawText.split("|||");
-                
-                // RENDER CARDS
-                const types = [
-                    { label: "Warm & Gratitude 🤝", class: "badge-warm" },
-                    { label: "Excitement & Upgrade 🚀", class: "badge-urgent" },
-                    { label: "Professional & Financial 👔", class: "badge-pro" }
-                ];
-
-                messages.forEach((msg, index) => {
-                    if (msg.trim().length > 10 && index < 3) {
-                        createCard(types[index], msg.trim(), mobile);
-                    }
-                });
-            }
-
+            await tryModelCall('gemini-pro', key, prompt, mobile);
         } catch (error) {
-            console.error(error);
-            alert("Connection Error. Check your internet.");
+            console.log("Gemini Pro failed, trying Flash...");
+            try {
+                await tryModelCall('gemini-1.5-flash', key, prompt, mobile);
+            } catch (err2) {
+                alert("AI Error: Both models failed. Please check your API Key.");
+            }
         }
 
-        // RESET UI
-        saveData(); // Save settings one last time
+        saveData();
         btn.disabled = false;
         loader.style.display = "none";
         btnText.innerText = "Generate Messages ✨";
+    }
+
+    async function tryModelCall(modelName, key, prompt, mobile) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${key}`;
+        
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error.message);
+        } else {
+            const rawText = data.candidates[0].content.parts[0].text;
+            const messages = rawText.split("|||");
+            const types = [
+                { label: "Warm & Gratitude 🤝", class: "badge-warm" },
+                { label: "Excitement & Upgrade 🚀", class: "badge-urgent" },
+                { label: "Professional & Financial 👔", class: "badge-pro" }
+            ];
+
+            messages.forEach((msg, index) => {
+                if (msg.trim().length > 10 && index < 3) {
+                    createCard(types[index], msg.trim(), mobile);
+                }
+            });
+        }
     }
 
     function createCard(typeObj, text, mobile) {
@@ -407,9 +233,7 @@
 
     function sendWA(text, mobile) {
         let url = `https://wa.me/?text=${text}`;
-        if (mobile && mobile.length >= 10) {
-            url = `https://wa.me/91${mobile}?text=${text}`;
-        }
+        if (mobile && mobile.length >= 10) url = `https://wa.me/91${mobile}?text=${text}`;
         window.open(url, '_blank');
     }
 </script>
